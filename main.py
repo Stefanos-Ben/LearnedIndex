@@ -37,7 +37,7 @@ def lineDataGen(amount, a, b):
     labels = []
     for i in range(amount):
         data.append(i)
-        labels.append(2*i+1)
+        labels.append(a*i+b)
     return np.array(data), np.array(labels)
 
 
@@ -71,7 +71,7 @@ def modelPrecision(predictions, labels):
 
 def main():
 
-    keys,labels = lineDataGen(100, 2, 1) #Generate 100 samples on the 2x + 1 line
+    keys,labels = lineDataGen(100, -5, 3) #Generate 100 samples on the 2x + 1 line
     model = train(keys, labels) # Train a linear Regression Model on the generated keys and labels
     predictions = model.predict(keys.reshape(-1,1)) # Predict the position of the keys generated with the model.
     print(keys)
