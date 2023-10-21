@@ -2,11 +2,11 @@ import numpy as np
 from sklearn.linear_model import LinearRegression
 
 class LearnedIndex:
-    def __init__(self, data, labels):
-        self.data = np.array(data)
-        self.labels = np.array(labels)
+    def __init__(self, data):
+        self.data = data
         np.sort(self.data)
-        np.sort(self.labels)
+        self.labels = np.where(~np.isnan(data))[0]  #Create
+        self.keys = self.data[self.labels]
         self.build()
 
     def build(self):
@@ -25,9 +25,9 @@ class LearnedIndex:
              None
          """
         self.index= {}
-        for KEY, POS in zip(self.data, self.labels):
+        for KEY, POS in zip(self.keys, self.labels):
             self.index[POS] = KEY
-        X = self.data.reshape(-1,1)
+        X = self.keys.reshape(-1,1)
         Y = self.labels.reshape(-1,1)
         self.model = LinearRegression()
         self.model.fit(X,Y)

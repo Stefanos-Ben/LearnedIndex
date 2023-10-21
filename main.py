@@ -20,7 +20,7 @@ def logNormalGen(amount):
     return data
 
 
-def lineDataGen(amount, a, b):
+def lineDataGen(amount, limit,a, b):
     """
     Generates linear data and labels.
 
@@ -32,20 +32,19 @@ def lineDataGen(amount, a, b):
     Returns:
     numpy.ndarray, numpy.ndarray: Arrays containing generated data and labels.
     """
-    data= []
+    data = np.full(a*limit+b, np.nan)
     labels = []
     for i in range(amount):
-        data.append(i)
-        labels.append(a*i+b)
-    return np.array(data), np.array(labels)
+        data[a*i+b] = i
+    return data
 
 
 
 
 
 def main():
-    keys,labels = lineDataGen(10, 2, 1) #Generate 100 samples on the 2x + 1 line
-    idx = LearnedIndex(keys, labels) # Create a learned index for the samples created
+    data = lineDataGen(10,10, 2, 1) #Generate 100 samples on the 2x + 1 line
+    idx = LearnedIndex(data) # Create a learned index for the samples created
     res, err = idx.find(6) # Find the position of the key using the index
     print(res)
 
