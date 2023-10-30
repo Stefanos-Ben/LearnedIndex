@@ -17,7 +17,7 @@ def logNormalGen(amount):
         sample = 10. + np.random.standard_normal(100)
         data.append(np.prod(sample))
     data = np.array(data)/np.min(data)
-    return data
+    return np.rint(data)
 
 
 def lineDataGen(amount, limit,a, b):
@@ -43,11 +43,11 @@ def lineDataGen(amount, limit,a, b):
 
 
 def main():
-    data = lineDataGen(10,10, 2, 1) #Generate 100 samples on the 2x + 1 line
+    #data = lineDataGen(10,10, 2, 1) #Generate 100 samples on the 2x + 1 line
+    #data = np.array([0,1,2,3,4,5,6,7,8,9])
+    data = logNormalGen(10)
     idx = LearnedIndex(data) # Create a learned index for the samples created
-    res, err = idx.find(6) # Find the position of the key using the index
-    print(res)
-
+    res, err = idx.find(10) # Find the position of the key using the index
 
 if __name__ == '__main__':
     main()
