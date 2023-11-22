@@ -41,9 +41,9 @@ class DataGen:
         a = np.random.randint(10)
         b = np.random.randint(10)
         print(f"Creating linear data according to the {a}x+{b} line.")
-        data = np.full(a * self.size + b, np.nan)
+        data = []
         for i in range(self.size):
-            data[a * i + b] = i
+            data.append(a*i+b)
         return data
 
     def log_normal(self):

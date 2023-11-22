@@ -2,6 +2,7 @@ import numpy as np
 from helpers import minmax
 from enum import Enum
 from sklearn.linear_model import LinearRegression
+from sklearn.preprocessing import PolynomialFeatures
 
 
 class Regression(Enum):
@@ -9,9 +10,9 @@ class Regression(Enum):
     POLYNOMIAL = 1
 
 
-
 class LearnedIndex:
-    def __init__(self, data):
+    def __init__(self, reg, data):
+        self.reg = reg
         self.model = None
         self.index = None
         self.data = np.array(data)
@@ -37,12 +38,19 @@ class LearnedIndex:
              None
          """
         self.index = {}
-        for KEY, POS in zip(self.keys, self.labels):
-            self.index[POS] = KEY
-        X = self.keys.reshape(-1, 1)
-        Y = self.labels.reshape(-1, 1)
-        self.model = LinearRegression()
-        self.model.fit(X, Y)
+        if self.reg == Regression.LINEAR:
+            for KEY, POS in zip(self.keys, self.labels):
+                self.index[POS] = KEY
+            X = self.keys.reshape(-1, 1)
+            Y = self.labels.reshape(-1, 1)
+            self.model = LinearRegression()
+            self.model.fit(X, Y)
+        elif self.reg == Regression.POLYNOMIAL:
+            poly = PolynomialFeatures(degree=2, include_bias=False)
+            X = poly.fit_transform(self.keys.reshape(-1, 1))
+            Y = self.labels.reshape(-1, 1)
+            self.model = LinearRegression()
+            self.model.fit(X, Y)
 
     def find(self, key):
         """
@@ -58,7 +66,7 @@ class LearnedIndex:
         upper_bound = len(self.index) - 1
         lower_bound = 0
         error = 0
-        pos = minmax(lower_bound,upper_bound,np.rint(self.model.predict([[key]])[0][0]))
+        pos = minmax(lower_bound,upper_bound, np.rint(self.model.predict([[key]])[0][0]))
         # Holds the initial relativity of the key predicted with the key searched.
         esc_condition = self.index[pos] > key
         print(f"Model predicted that the requested key is in position {pos}")
@@ -78,3 +86,14 @@ class LearnedIndex:
                 return np.NaN, np.NaN
         print(f"Found {key} in position {pos} after making {error + 1} checks")
         return pos, error
+
+    def find_all(self):
+        stats = np.zeros(len(self.data))
+        for i in range(len(self.data)):
+            pos, err = self.find(self.data[i])
+            stats[err] += 1
+        return stats
+
+
+
+
