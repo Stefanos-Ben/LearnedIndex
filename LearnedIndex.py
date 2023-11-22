@@ -1,13 +1,23 @@
 import numpy as np
 from helpers import minmax
+from enum import Enum
 from sklearn.linear_model import LinearRegression
+
+
+class Regression(Enum):
+    LINEAR = 0
+    POLYNOMIAL = 1
+
+
 
 class LearnedIndex:
     def __init__(self, data):
+        self.model = None
+        self.index = None
         self.data = np.array(data)
         self.data = np.sort(self.data)
         print(self.data)
-        self.labels = np.where(~np.isnan(data))[0]  #Create
+        self.labels = np.where(~np.isnan(data))[0]  #Create Labels
         self.keys = self.data[self.labels]
         self.build()
 
@@ -26,16 +36,15 @@ class LearnedIndex:
          Returns:
              None
          """
-        self.index= {}
+        self.index = {}
         for KEY, POS in zip(self.keys, self.labels):
             self.index[POS] = KEY
-        X = self.keys.reshape(-1,1)
-        Y = self.labels.reshape(-1,1)
+        X = self.keys.reshape(-1, 1)
+        Y = self.labels.reshape(-1, 1)
         self.model = LinearRegression()
-        self.model.fit(X,Y)
+        self.model.fit(X, Y)
 
-
-    def find(self,key):
+    def find(self, key):
         """
            Search for a key in an indexed data structure using a predictive model.
 
@@ -50,24 +59,21 @@ class LearnedIndex:
         lower_bound = 0
         error = 0
         pos = minmax(lower_bound,upper_bound,np.rint(self.model.predict([[key]])[0][0]))
-        # Holds the initial relativity of the key predicted with the key serached.
+        # Holds the initial relativity of the key predicted with the key searched.
         esc_condition = self.index[pos] > key
         print(f"Model predicted that the requested key is in position {pos}")
-        max_checks = 3
-
         while self.index[pos] != key:
             # Escape if you overextend in key.
             pos += 1 if self.index[pos] < key else -1
-            if pos > upper_bound :
-                print("heyo")
+            if pos > upper_bound or pos < lower_bound:
                 esc = True
-            elif  (~esc_condition and self.index[pos] <= key) or (esc_condition and self.index[pos] >= key):
+            elif (~esc_condition and self.index[pos] <= key) or (esc_condition and self.index[pos] >= key):
                 esc = False
                 error += 1
             else:
-                esc =True
+                esc = True
                 error += 1
-            if ~(0 <= pos < len(self.data)) or esc:
+            if esc:
                 print(f"After making {error + 1} checks I figured that the key doesn't exist!")
                 return np.NaN, np.NaN
         print(f"Found {key} in position {pos} after making {error + 1} checks")
