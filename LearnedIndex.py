@@ -38,9 +38,9 @@ class LearnedIndex:
              None
          """
         self.index = {}
+        for KEY, POS in zip(self.keys, self.labels):
+            self.index[POS] = KEY
         if self.reg == Regression.LINEAR:
-            for KEY, POS in zip(self.keys, self.labels):
-                self.index[POS] = KEY
             X = self.keys.reshape(-1, 1)
             Y = self.labels.reshape(-1, 1)
             self.model = LinearRegression()
@@ -51,6 +51,7 @@ class LearnedIndex:
             Y = self.labels.reshape(-1, 1)
             self.model = LinearRegression()
             self.model.fit(X, Y)
+
 
     def find(self, key):
         """
@@ -66,7 +67,10 @@ class LearnedIndex:
         upper_bound = len(self.index) - 1
         lower_bound = 0
         error = 0
-        pos = minmax(lower_bound,upper_bound, np.rint(self.model.predict([[key]])[0][0]))
+        if self.reg == Regression.POLYNOMIAL:
+            pos = minmax(lower_bound, upper_bound, np.rint(self.model.predict([[key, key**2]])[0][0]))
+        else:
+            pos = minmax(lower_bound, upper_bound, np.rint(self.model.predict([[key]])[0][0]))
         # Holds the initial relativity of the key predicted with the key searched.
         esc_condition = self.index[pos] > key
         print(f"Model predicted that the requested key is in position {pos}")

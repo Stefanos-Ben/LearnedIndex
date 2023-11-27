@@ -1,7 +1,8 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-def minmax(min_val,max_val,val):
+
+def minmax(min_val, max_val, val):
     if max(min_val, val) == val and min(val, max_val) == val:
         return val
     elif max(min_val, val) != val and min(val, max_val) == val:
