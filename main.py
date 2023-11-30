@@ -6,13 +6,13 @@ from helpers import hist_plot
 
 
 def main():
-    data = DataGen(Distribution.RANDOM, 100).generate()
+    data = DataGen(Distribution.RANDOM, 10000).generate()
     idx = LearnedIndex(Regression.POLYNOMIAL, data)  # Create a learned index for the samples created
-    res, err = idx.find(10)  # Find the position of the key using the index
+    # res, err = idx.find(10)  # Find the position of the key using the index
     error_board = idx.find_all()
     error_board = error_board.astype(int)
     print(error_board)
-    hist_plot(error_board, 'Polynomial Regression in Random Data')
+    hist_plot(error_board, 'Polynomial Regression(Degree: 4) in Random Data N=10000')
 
 
 if __name__ == '__main__':

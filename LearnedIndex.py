@@ -46,12 +46,11 @@ class LearnedIndex:
             self.model = LinearRegression()
             self.model.fit(X, Y)
         elif self.reg == Regression.POLYNOMIAL:
-            poly = PolynomialFeatures(degree=2, include_bias=False)
+            poly = PolynomialFeatures(degree=4, include_bias=False)
             X = poly.fit_transform(self.keys.reshape(-1, 1))
             Y = self.labels.reshape(-1, 1)
             self.model = LinearRegression()
             self.model.fit(X, Y)
-
 
     def find(self, key):
         """
@@ -68,7 +67,7 @@ class LearnedIndex:
         lower_bound = 0
         error = 0
         if self.reg == Regression.POLYNOMIAL:
-            pos = minmax(lower_bound, upper_bound, np.rint(self.model.predict([[key, key**2]])[0][0]))
+            pos = minmax(lower_bound, upper_bound, np.rint(self.model.predict([[key, key**2, key**3, key**4]])[0][0]))
         else:
             pos = minmax(lower_bound, upper_bound, np.rint(self.model.predict([[key]])[0][0]))
         # Holds the initial relativity of the key predicted with the key searched.
