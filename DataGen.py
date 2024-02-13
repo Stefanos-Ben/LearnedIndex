@@ -70,9 +70,4 @@ class DataGen:
             Returns:
             numpy.ndarray: An array of random samples.
         """
-        data = []
-        for i in range(self.size):
-            sample = np.random.randint(1000)
-            data.append(sample)
-        data = np.array(data)
-        return data
+        return np.random.choice(self.size**2, size=self.size, replace=False)
