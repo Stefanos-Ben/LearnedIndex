@@ -15,6 +15,23 @@ class DataGen:
         self.size = size
 
     def generate(self):
+        """
+        Generates data based on the specified distribution.
+
+        This method generates data points based on the distribution specified in the
+        'distribution' attribute of the object. The supported distributions are:
+        - LINEAR: Generates linear data points.
+        - NORMAL: Generates data points following a log-normal distribution.
+        - RANDOM: Generates random data points.
+
+        Returns:
+            data: An array containing the generated data points.
+
+        Note:
+            Ensure that the 'distribution' attribute is set to one of the supported
+            distributions before calling this method. If an unsupported distribution
+            is provided, the method will print an error message and return None.
+        """
         if self.distribution == Distribution.LINEAR:
             self.data = self.linear_data()
         elif self.distribution == Distribution.NORMAL:
@@ -28,15 +45,14 @@ class DataGen:
 
     def linear_data(self):
         """
-        Generates linear data and labels.
+        Generates linear data points based on a randomly generated linear equation.
 
-        Parameters:
-        amount (int): The number of data points to generate.
-        a (float): The slope of the linear relationship.
-        b (float): The y-intercept of the linear relationship.
+        This method creates a set of data points that lie along a straight line.
+        The equation of the line is randomly generated in the form 'y = ax + b',
+        where 'a' and 'b' are randomly chosen integers.
 
         Returns:
-        numpy.ndarray, numpy.ndarray: Arrays containing generated data and labels.
+            data: An array containing data points generated along the linear line.
         """
         a = np.random.randint(10)
         b = np.random.randint(10)
@@ -44,7 +60,7 @@ class DataGen:
         data = []
         for i in range(self.size):
             data.append(a*i+b)
-        return data
+        return np.array(data)
 
     def log_normal(self):
         """
@@ -70,4 +86,4 @@ class DataGen:
             Returns:
             numpy.ndarray: An array of random samples.
         """
-        return np.random.choice(self.size**2, size=self.size, replace=False)
+        return np.random.randint(1, self.size*1000, self.size)
